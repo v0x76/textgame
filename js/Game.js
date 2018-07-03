@@ -1,39 +1,23 @@
 (()=> {
     var Game = window.Game = {
-        scenes: {
-            first: {
-                lines: [ 'Waxes the tide.' ],
-
-                buttons: [{
-                    text: 'Begone',
-                    onclick: ()=>{ Game.setScene( Game.scenes.fetch ) }
-                }]
-            },
-            fetch: {
-                lines: [ 'Yield!', 'Wanes the tide.' ],
-                buttons: [{
-                    text:'Come',
-                    onclick: ()=>{ Game.setScene( Game.scenes.first ) }
-                }]
-            }
-        },
-
-        init: function() {
+        init: function(pages) {
             $('<div>').attr('id', 'display').appendTo('main')
 
             $('<div>').attr('id', 'dialog').appendTo('#display')
             $('<div>').attr('id', 'options').appendTo('#display')
 
-            this.setScene(this.scenes.first)
+            this.setPage(pages.first, 2000)
         },
 
-        setScene: function(scene) {
+        setPage: function(page, speed) {
+            var animdur = speed;
+
             var drawLines = function(index, complete) {
-                var line = scene.lines[index]
+                var line = page.lines[index]
                 if(line) {
                     $('<p>').text(line).appendTo('#dialog')
                         .css('display', 'none')
-                        .fadeIn(600, ()=>{ drawLines(index+1, complete) })
+                        .fadeIn(animdur, ()=>{ drawLines(index+1, complete) })
                 } else {
                     complete()
                 }
@@ -44,7 +28,7 @@
 
                 if(line < lines.length) {
                     $(lines[line]).animate({opacity: 0}, {
-                        duration: 600,
+                        duration: animdur,
                         complete: ()=>{
                             clearLines(line+1, complete)
                             }
@@ -56,14 +40,14 @@
 
             clearLines(0, ()=>{
                 $('#options').fadeOut({
-                    duration: 600,
+                    duration: animdur,
                     complete: ()=>{
                         $('#dialog').empty()
-                        drawLines(0, ()=>{ $('#options').fadeIn() } )
+                        drawLines(0, ()=>{ $('#options').fadeIn(animdur) } )
 
                         $('#options').empty()
-                        for(var button in scene.buttons) {
-                            new Button( scene.buttons[button] ).appendTo('#options')
+                        for(var button in page.buttons) {
+                            new Button( page.buttons[button] ).appendTo('#options')
                         }
                     }
                 })
@@ -73,6 +57,4 @@
     }
 
 })()
-
-$(()=> { Game.init() })
 
