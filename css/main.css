@@ -4,10 +4,14 @@
     --bg-color: mistyrose;
 }
 
-main {
+body {
     background-color: var(--bg-color);
+}
+
+main {
     color: var(--primary-color);
-    font-size: 28px;
+    font-family: serif;
+    font-size: xx-large;
     height: 100%;
 }
 

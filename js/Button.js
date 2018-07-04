@@ -14,7 +14,7 @@ class Button {
             .text(settings.text)
             .click( function() {
                 if( !$(this).hasClass('disabled') ) {
-                    $(this).addClass('disabled')
+                    $('.button').addClass('disabled')
                     $(this).data('handler')( $(this) )
                 }
             })
