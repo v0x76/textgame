@@ -6,7 +6,7 @@
             $('<div>').attr('id', 'dialog').appendTo('#display')
             $('<div>').attr('id', 'options').appendTo('#display')
 
-            this.setPage(pages.first, 2000)
+            this.setPage(pages.first, 1800)
         },
 
         setPage: function(page, speed) {

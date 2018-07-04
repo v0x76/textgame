@@ -7,19 +7,21 @@
     <script src="lib/jquery-3.3.1.min.js"></script>
 
     <script src="js/Button.js"></script>
-    <script src="js/StoryExample.js"></script>
     <script src="js/Game.js"></script>
+
+    <script src="js/ShortStories.js"></script>
     <script>
         $(()=> { 
-            var keys = Object.keys(Story)
-              , key = keys[ keys.length*Math.random() << 0 ]
-              , pages = Story[key];
+            var keys = Object.keys(Story),
+                key = keys[ keys.length*Math.random() << 0 ],
+                pages = Story[key]
 
             window.document.title = key
             Game.init(pages)
         })
     </script>
 
+    <style> html, body { height: 100%; margin: 0; } </style>
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
 </head>
 <body>
