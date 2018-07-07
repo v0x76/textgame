@@ -12,8 +12,10 @@
         setPage: function(page, speed) {
             var animdur = speed;
 
+            page = page.bind(Story)
+
             var drawLines = function(index, complete) {
-                var line = page.lines[index]
+                var line = page().lines[index]
                 if(line) {
                     $('<p>').text(line).appendTo('#dialog')
                         .css('display', 'none')
@@ -46,8 +48,8 @@
                         drawLines(0, ()=>{ $('#options').fadeIn(animdur) } )
 
                         $('#options').empty()
-                        for(var button in page.buttons) {
-                            new Button( page.buttons[button] ).appendTo('#options')
+                        for(var button in page().buttons) {
+                            new Button( page().buttons[button] ).appendTo('#options')
                         }
                     }
                 })

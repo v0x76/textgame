@@ -9,15 +9,10 @@
     <script src="js/Button.js"></script>
     <script src="js/Game.js"></script>
 
-    <script src="js/ShortStories.js"></script>
+    <script src="story/nothing.js"></script>
     <script>
         $(()=> { 
-            var keys = Object.keys(Story),
-                key = keys[ keys.length*Math.random() << 0 ],
-                pages = Story[key]
-
-            window.document.title = key
-            Game.init(pages)
+            Game.init(Story.nothing)
         })
     </script>
 
