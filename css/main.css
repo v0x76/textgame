@@ -1,11 +1,15 @@
 :root {
-    --primary-color: palevioletred;
-    --primary-light-color: lightpink;
-    --bg-color: mistyrose;
+    --primary-color: white;
+    --accent-color: white;
+    --bg-color: white;
+
+    --anim-dur: 1s;
 }
 
 body {
+    background-repeat: repeat;
     background-color: var(--bg-color);
+    transition: background var(--anim-dur);
 }
 
 main {
@@ -13,6 +17,7 @@ main {
     font-family: serif;
     font-size: xx-large;
     height: 100%;
+    transition: color var(--anim-dur); 
 }
 
 #display {
@@ -34,17 +39,17 @@ main {
 .button {
     min-width: 100px;
     max-width: 30%;
-    padding: 5px 10px;
-    margin: 2px 6px 10px 6px;
+    padding: 13px 24px;
+    margin: 2px 15px 10px;
     text-align: center;
+    font-size: 1.05em;
+    letter-spacing: 2px;
 
     cursor: pointer;
-    border: 1px solid var(--primary-color);
-    border-width: 0 0 2px;
+    border: 3px solid var(--primary-color);
     user-select: none;
     -moz-user-select: none;
+    transition: border-color var(--anim-dur), opacity 0.25s; 
 }
-.button:hover {
-    text-decoration: underline;
-}
+.button:hover:not(:active) { opacity: 0.5; }
 

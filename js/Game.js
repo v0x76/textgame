@@ -14,6 +14,7 @@
 
             page = page.bind(Story)
 
+            // Recursively draw each line of dialogue
             var drawLines = function(index, complete) {
                 var line = page().lines[index]
                 if(line) {
@@ -25,6 +26,7 @@
                 }
             }
 
+            // Recursively clear each line of dialogue
             var clearLines = function(line, complete) {
                 var lines = $('#dialog p')
 
