@@ -7,7 +7,7 @@
 }
 
 body {
-    background-repeat: repeat;
+    background-attachment: fixed;
     background-color: var(--bg-color);
     transition: background var(--anim-dur);
 }
@@ -28,6 +28,10 @@ main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+#dialog span {
+    color: var(--accent-color);
 }
 
 #options {
