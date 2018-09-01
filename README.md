@@ -1,4 +1,4 @@
 # textgame
 
-A short story developed in javascript.
+A short story with extra juice using javascript.
 

@@ -12,7 +12,7 @@ class Button {
 
         var el = $('<div>')
             .addClass('button')
-            .text(settings.text)
+            .html(settings.text)
             .click( function() {
                 if( !$(this).hasClass('disabled') ) {
                     $('.button').addClass('disabled')

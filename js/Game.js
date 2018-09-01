@@ -18,7 +18,7 @@
             var drawLines = function(index, complete) {
                 var line = page().lines[index]
                 if(line) {
-                    $('<p>').text(line).appendTo('#dialog')
+                    $('<p>').html(line).appendTo('#dialog')
                         .css('display', 'none')
                         .fadeIn(animdur, ()=>{ drawLines(index+1, complete) })
                 } else {
@@ -42,17 +42,21 @@
                 }
             }
 
+            var setOptions = function() { 
+                drawLines(0, ()=>{ $('#options').fadeIn(animdur) } )
+
+                $('#options').empty()
+                for(var button in page().buttons) {
+                    new Button( page().buttons[button] ).appendTo('#options')
+                }
+            }
+
             clearLines(0, ()=>{
                 $('#options').fadeOut({
                     duration: animdur,
                     complete: ()=>{
                         $('#dialog').empty()
-                        drawLines(0, ()=>{ $('#options').fadeIn(animdur) } )
-
-                        $('#options').empty()
-                        for(var button in page().buttons) {
-                            new Button( page().buttons[button] ).appendTo('#options')
-                        }
+                        setOptions()
                     }
                 })
             })
