@@ -1,15 +1,29 @@
 var Story = {
     reminder: {
-        start: function() {
-            window.document.title = 'THREAD #143'
 
-            $("head").append("<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>")
+        start: function() {
+            window.document.title = 'THREAD #120'
+            this.threadcount = 120
+            this.age = this.threadcount / 2
+
+            this.feedback = [
+                'I FEEL UNSATISFIED WITH LIFE.'
+              + ' NOTHING REAL EVER HAPPENS.'
+              + ' I CAN\'T BREATHE.',
+                'THERE\'S NOTHING HERE FOR ME. LET ME GO. FOR GOD\'S SAKE'
+              + ' PLEASE I\'M BEGGING YOU.',
+                'I HATE IT I HATE I HATE IT I HATE IT I HATE IT',
+                'FUCK YOU LET ME DIE. YOU CAN\'T DO THIS TO ME. OH'
+              + ' GOD OH GOD OH GOD OH'.repeat( this.threadcount * 3 )
+            ]
+
+            $('head').append('<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">')
             $('main').css('font-family', '"Oswald", sans')
             $('#dialog').css('line-height', '36px')
 
             $('body').css('background-position', '0 0') 
             $('body').css('background-image', `
-                url("./story/assets/background.png"),
+                url('./story/assets/background.png'),
 
                 radial-gradient(circle at 50% 0,
                     rgba(255,248,97,.38),
@@ -65,10 +79,13 @@ var Story = {
                     text: '...',
                     onclick: ()=> {
                         this.reminder.counter += 1
-                        if( this.reminder.counter < 4 ) {
+                        if( this.reminder.counter < 4
+                         && this.reminder.threadcount <= 120 ) {
                             Game.setPage( this.reminder.i_yes, 400 )
                         } else {
                             Game.setPage( this.reminder.i, 1800 )
+                            this.reminder.threadcount += 1
+                            window.document.title = "Thread #" + this.reminder.threadcount
                         }
                     }
                 }]
@@ -81,9 +98,9 @@ var Story = {
                          'PLEASE SUBMIT FEEDBACK',
                          'ON HOW YOU WOULD RATE YOUR EXPERIENCE WITH US.' ],
                 buttons: [{
-                    text: 'I FEEL UNSATISFIED WITH LIFE. '
-                        + 'NOTHING REAL EVER HAPPENS. '
-                        + 'I CAN\'T BREATHE.',
+                    text: this.reminder.threadcount <= 120 
+                        ? this.reminder.feedback[0]
+                        : this.reminder.feedback[ Math.floor(Math.random()*this.reminder.feedback.length) ],
                     onclick: ()=> { Game.setPage( this.reminder.i_no_i, 1000 ) }
                 }]
             }
@@ -99,10 +116,13 @@ var Story = {
                     text: '...',
                     onclick: ()=> {
                         this.reminder.counter += 1
-                        if( this.reminder.counter < 4 ) {
+                        if( this.reminder.counter < 4
+                         && this.reminder.threadcount <= 120 ) {
                             Game.setPage( this.reminder.i_no_i, 400 )
                         } else {
                             Game.setPage( this.reminder.i, 1800 )
+                            this.reminder.threadcount += 1
+                            window.document.title = "Thread #" + this.reminder.threadcount
                         }
                     }
                 }]
@@ -111,3 +131,4 @@ var Story = {
 
     }
 }
+
