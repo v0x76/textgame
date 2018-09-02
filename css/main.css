@@ -20,19 +20,11 @@ main {
     transition: color var(--anim-dur); 
 }
 
-#display {
-    padding-top: 140px;
-}
+#display { padding-top: 140px; }
 
-#dialog p {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+#dialog p { text-align: center; }
 
-#dialog span {
-    color: var(--accent-color);
-}
+#dialog span { color: var(--accent-color); }
 
 #options {
     display: flex;

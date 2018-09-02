@@ -1,21 +1,58 @@
 var Story = {
     reminder: {
+        calcElo: function() {
+            var form = 2200 + 1400*Math.cos(0.02*this.age) + 50*Math.cos(0.3*this.age)
+            return Math.round(form)
+        },
+
+        getFeedback: function() {
+            var feedback = [
+                'I FEEL UNSATISFIED WITH LIFE.'
+              + ' NOTHING REAL EVER HAPPENS.'
+              + ' I CAN\'T BREATHE.',
+                'FUCK YOU LET ME DIE. YOU CAN\'T DO THIS TO ME. OH'
+              + ' GOD OH GOD OH GOD OH'.repeat( this.age*5 ),
+                'I HATE IT I HATE I HATE IT I HATE IT I HATE IT',
+                'THERE\'S NOTHING FOR ME HERE. LET ME GO. FOR GOD\'S SAKE'
+              + ' PLEASE I\'M BEGGING YOU.',
+                '...'
+            ]
+
+            var progress = (this.age-60)/90
+
+            // Heavier weighting near start and end of game
+            // Meaning less variance at these points
+            var weight = 24*( progress-0.5 )**4
+
+            // Selected string will be within first 2/7ths of array
+            // on initial loop and last 2/7ths on final loop
+            var randnum = ( Math.random() + progress*(2+weight) )/(3+weight)
+            var index = Math.floor( randnum*feedback.length  )
+
+            return feedback[index]
+        },
+
+        onLoop: function() {
+            var jitter = ( Math.random()-0.5 )*3
+            var timeskip = Math.round( 9 + jitter ) // =~20 total gameplay loops
+            var newthread = this.threadcount + timeskip
+
+            if( newthread > 300 ) {
+                newthread = 300
+            }
+
+            this.threadcount = newthread
+            this.age = this.threadcount / 2
+            window.document.title = "Thread #" + this.threadcount
+
+            $('#overlay').css('opacity', (this.threadcount-120)/360 )
+        },
 
         start: function() {
             window.document.title = 'THREAD #120'
             this.threadcount = 120
             this.age = this.threadcount / 2
-
-            this.feedback = [
-                'I FEEL UNSATISFIED WITH LIFE.'
-              + ' NOTHING REAL EVER HAPPENS.'
-              + ' I CAN\'T BREATHE.',
-                'THERE\'S NOTHING HERE FOR ME. LET ME GO. FOR GOD\'S SAKE'
-              + ' PLEASE I\'M BEGGING YOU.',
-                'I HATE IT I HATE I HATE IT I HATE IT I HATE IT',
-                'FUCK YOU LET ME DIE. YOU CAN\'T DO THIS TO ME. OH'
-              + ' GOD OH GOD OH GOD OH'.repeat( this.threadcount * 3 )
-            ]
+            this.elo = this.calcElo()
 
             $('head').append('<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">')
             $('main').css('font-family', '"Oswald", sans')
@@ -38,31 +75,42 @@ var Story = {
                     rgba(204,83,103,0) 79%)
             `)
 
+            $('<div>').attr('id', 'overlay').appendTo('body').css({
+                'position': 'fixed',
+                'top': '0',
+                'width': '100%',
+                'height': '100%',
+                'background-color': 'rgb(127, 127, 127)',
+                'pointer-events': 'none',
+                'opacity': '0'
+            })
+
             $(':root').css('--primary-color', 'bisque')
             $(':root').css('--accent-color', 'mintcream')
             $(':root').css('--bg-color', 'royalblue')
             $(':root').css('--anim-dur', '4s')
             Game.setPage( this.i, 1800 )
+            $('#overlay').css('transition', 'opacity var(--anim-dur)')
             $(':root').css('--anim-dur', '2s')
         },
 
         i: function() {
             return {
                 lines: [ 'REMINDER:',
-                         'YOU HAVE 40% REMAINING OF YOUR 150 YEAR LIFESPAN.',
+                         'YOU HAVE <span>' + ( (this.reminder.age/150)*100 ).toFixed(1)
+                       + '%</span> REMAINING OF YOUR <span>150</span> YEAR LIFESPAN.',
                          'YOU MAY BE ELIGIBLE FOR AN EXTENSION,',
                          'PRESS \'<span>YES</span>\' FOR MORE DETAILS.',
                          'PRESS \'<span>NO</span>\' FOR EARLY CONTRACT TERMINATION.' ],
                 buttons: [{
                     text: 'YES',
                     onclick: ()=> {
-                        this.reminder.counter = 0
+                        this.reminder.elo = this.reminder.calcElo()
                         Game.setPage( this.reminder.i_yes, 1000 )
                     }
                 }, {
                     text: 'NO',
                     onclick: ()=> {
-                        this.reminder.counter = 0
                         Game.setPage( this.reminder.i_no, 1000 )
                     } 
                 }]
@@ -72,21 +120,14 @@ var Story = {
         i_yes: function() {
             return {
                 lines: [ 'LIMITED LIFESPAN EXTENSIONS ARE AVAILABLE',
-                         'TO PERSONS OF ELO RATING OVER 2762.',
-                         'YOUR ELO RATING IS: 1553.',
+                         'TO PERSONS OF ELO RATING OVER <span>2762</span>.',
+                         'YOUR ELO RATING IS: <span>'+this.reminder.elo+'</span>.',
                          'END OF THREAD' ],
                 buttons: [{
                     text: '...',
                     onclick: ()=> {
-                        this.reminder.counter += 1
-                        if( this.reminder.counter < 4
-                         && this.reminder.threadcount <= 120 ) {
-                            Game.setPage( this.reminder.i_yes, 400 )
-                        } else {
-                            Game.setPage( this.reminder.i, 1800 )
-                            this.reminder.threadcount += 1
-                            window.document.title = "Thread #" + this.reminder.threadcount
-                        }
+                        this.reminder.onLoop()
+                        Game.setPage( this.reminder.i, 1800 )
                     }
                 }]
             }
@@ -98,9 +139,7 @@ var Story = {
                          'PLEASE SUBMIT FEEDBACK',
                          'ON HOW YOU WOULD RATE YOUR EXPERIENCE WITH US.' ],
                 buttons: [{
-                    text: this.reminder.threadcount <= 120 
-                        ? this.reminder.feedback[0]
-                        : this.reminder.feedback[ Math.floor(Math.random()*this.reminder.feedback.length) ],
+                    text: this.reminder.getFeedback(),
                     onclick: ()=> { Game.setPage( this.reminder.i_no_i, 1000 ) }
                 }]
             }
@@ -115,15 +154,8 @@ var Story = {
                 buttons: [{
                     text: '...',
                     onclick: ()=> {
-                        this.reminder.counter += 1
-                        if( this.reminder.counter < 4
-                         && this.reminder.threadcount <= 120 ) {
-                            Game.setPage( this.reminder.i_no_i, 400 )
-                        } else {
-                            Game.setPage( this.reminder.i, 1800 )
-                            this.reminder.threadcount += 1
-                            window.document.title = "Thread #" + this.reminder.threadcount
-                        }
+                        this.reminder.onLoop()
+                        Game.setPage( this.reminder.i, 1800 )
                     }
                 }]
             }
