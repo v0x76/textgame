@@ -78,15 +78,15 @@ var Story = {
                 url('./story/assets/background.png'),
 
                 radial-gradient(circle at 50% 0,
-                    rgba(255,248,97,.38),
+                    rgba(255,248,97,.31),
                     rgba(255,248,97,0) 79%),
 
                 radial-gradient(circle at 9% 81%,
-                    rgba(119,214,255,.38),
+                    rgba(119,214,255,.31),
                     rgba(119,214,255,0) 79%),
 
                 radial-gradient(circle at 100% 70%,
-                    rgba(204,83,103,.38),
+                    rgba(204,83,103,.31),
                     rgba(204,83,103,0) 79%)
             `)
 
