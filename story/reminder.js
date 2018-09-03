@@ -120,7 +120,7 @@ var Story = {
         i: function() {
             return {
                 lines: [ 'REMINDER:',
-                         'YOU HAVE <span>' + ( (this.reminder.age/150)*100 ).toFixed(1)
+                         'YOU HAVE <span>' + ( 100-(this.reminder.age/150)*100 ).toFixed(1)
                        + '%</span> REMAINING OF YOUR <span>150</span> YEAR LIFESPAN.',
                          'YOU MAY BE ELIGIBLE FOR AN EXTENSION,',
                          'PRESS \'<span>YES</span>\' FOR MORE DETAILS.',
