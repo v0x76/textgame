@@ -1,6 +1,7 @@
 var Story = {
     reminder: {
         calcElo: function() {
+            // Expression designed for natural looking decline
             var form = 2200 + 1400*Math.cos(0.02*this.age) + 50*Math.cos(0.3*this.age)
             return Math.round(form)
         },
@@ -10,11 +11,10 @@ var Story = {
                 'I FEEL UNSATISFIED WITH LIFE.'
               + ' NOTHING REAL EVER HAPPENS.'
               + ' I CAN\'T BREATHE.',
-                'FUCK YOU LET ME DIE. YOU CAN\'T DO THIS TO ME. OH'
+                'FUCK YOU! LET ME DIE! YOU CAN\'T DO THIS TO ME! OH'
               + ' GOD OH GOD OH GOD OH'.repeat( this.age*5 ),
                 'I HATE IT I HATE I HATE IT I HATE IT I HATE IT',
-                'THERE\'S NOTHING FOR ME HERE. LET ME GO. FOR GOD\'S SAKE'
-              + ' PLEASE I\'M BEGGING YOU.',
+                'THERE\'S NOTHING FOR ME HERE. LET ME GO. PLEASE.',
                 '...'
             ]
 
@@ -45,11 +45,26 @@ var Story = {
             this.age = this.threadcount / 2
             window.document.title = "Thread #" + this.threadcount
 
-            $('#overlay').css('opacity', (this.threadcount-120)/360 )
+            var progress = (this.threadcount-120)/180
+
+            // =1000 at progress=0, min turn point at 0.5 =400
+            this.pagespeed = 400 + 2400*( progress-0.5 )**2
+
+            // Liner progression from 0%->50% opacity spanning whole game
+            $('#overlay').css('opacity', progress/2 )
+
+            // Display unfocused FX for middle section of game
+            if( progress > 0.37 && progress <= 0.71 ) {
+                $('#display').addClass('unfocusFX')
+            } else if( progress > 0.71 ) {
+                $('#display').removeClass('unfocusFX')
+            }
         },
 
         start: function() {
             window.document.title = 'THREAD #120'
+
+            this.pagespeed = 1000
             this.threadcount = 120
             this.age = this.threadcount / 2
             this.elo = this.calcElo()
@@ -75,6 +90,7 @@ var Story = {
                     rgba(204,83,103,0) 79%)
             `)
 
+            // Progressive visual FX
             $('<div>').attr('id', 'overlay').appendTo('body').css({
                 'position': 'fixed',
                 'top': '0',
@@ -84,12 +100,19 @@ var Story = {
                 'pointer-events': 'none',
                 'opacity': '0'
             })
+            $('<style>').html(`
+                @keyframes unfocus {
+                    0%, 40%, 44%, 48%, 62%, 100% { padding-left: 0.1px; filter: blur(0) contrast(100%); }
+                    42%, 46%, 50%, 80% { padding-left: 1.9px; filter: blur(1px) contrast(118%); }
+                }
+                .unfocusFX { animation: unfocus 6s ease-in-out var(--anim-dur) infinite; }
+            `).appendTo('head')
 
             $(':root').css('--primary-color', 'bisque')
             $(':root').css('--accent-color', 'mintcream')
             $(':root').css('--bg-color', 'royalblue')
             $(':root').css('--anim-dur', '4s')
-            Game.setPage( this.i, 1800 )
+            Game.setPage( this.i, this.pagespeed*1.8 )
             $('#overlay').css('transition', 'opacity var(--anim-dur)')
             $(':root').css('--anim-dur', '2s')
         },
@@ -106,12 +129,12 @@ var Story = {
                     text: 'YES',
                     onclick: ()=> {
                         this.reminder.elo = this.reminder.calcElo()
-                        Game.setPage( this.reminder.i_yes, 1000 )
+                        Game.setPage( this.reminder.i_yes, this.reminder.pagespeed )
                     }
                 }, {
                     text: 'NO',
                     onclick: ()=> {
-                        Game.setPage( this.reminder.i_no, 1000 )
+                        Game.setPage( this.reminder.i_no, this.reminder.pagespeed )
                     } 
                 }]
             }
@@ -127,7 +150,7 @@ var Story = {
                     text: '...',
                     onclick: ()=> {
                         this.reminder.onLoop()
-                        Game.setPage( this.reminder.i, 1800 )
+                        Game.setPage( this.reminder.i, this.reminder.pagespeed*1.8 )
                     }
                 }]
             }
@@ -140,7 +163,7 @@ var Story = {
                          'ON HOW YOU WOULD RATE YOUR EXPERIENCE WITH US.' ],
                 buttons: [{
                     text: this.reminder.getFeedback(),
-                    onclick: ()=> { Game.setPage( this.reminder.i_no_i, 1000 ) }
+                    onclick: ()=> { Game.setPage( this.reminder.i_no_i, this.reminder.pagespeed ) }
                 }]
             }
         },
@@ -155,7 +178,7 @@ var Story = {
                     text: '...',
                     onclick: ()=> {
                         this.reminder.onLoop()
-                        Game.setPage( this.reminder.i, 1800 )
+                        Game.setPage( this.reminder.i, this.reminder.pagespeed*1.8 )
                     }
                 }]
             }
